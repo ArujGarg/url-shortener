@@ -13,3 +13,16 @@ export const handleShortenUrl = async (inputUrl: string) => {
   console.log("reponse of POST ", response);
   return response.data;
 };
+
+export const handleCopy = async (
+  shortUrl: string,
+  setCopied: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+  await navigator.clipboard.writeText(shortUrl);
+
+  setCopied(true);
+
+  setTimeout(() => {
+    setCopied(false);
+  }, 2000);
+};

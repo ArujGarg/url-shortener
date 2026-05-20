@@ -1,12 +1,13 @@
 "use client";
 
-import { handleShortenUrl } from "@/helpers/inputbox.helpers";
+import { handleCopy, handleShortenUrl } from "@/helpers/inputbox.helpers";
 import { useState } from "react";
 
 export const InputBox = () => {
   const [inputUrl, setInputUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   return (
     <div className="mt-10 w-full max-w-3xl">
@@ -37,7 +38,7 @@ export const InputBox = () => {
             }
           }}
           disabled={loading}
-          className="rounded-2xl bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-4 font-semibold transition hover:scale-[1.02] hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+          className="cursor-pointer rounded-2xl bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-4 font-semibold transition hover:scale-[1.02] hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
         >
           {loading ? "Shortening..." : "Shorten URL"}
         </button>
@@ -57,10 +58,12 @@ export const InputBox = () => {
             </a>
 
             <button
-              onClick={() => navigator.clipboard.writeText(shortUrl)}
-              className="rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm transition hover:bg-white/20"
+              onClick={async () => {
+                handleCopy(shortUrl, setCopied);
+              }}
+              className="cursor-pointer rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm transition hover:bg-white/20"
             >
-              Copy
+              {copied ? "Copied!" : "Copy"}
             </button>
           </div>
         </div>
