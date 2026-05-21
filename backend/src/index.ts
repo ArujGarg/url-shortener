@@ -2,6 +2,9 @@ import express from "express";
 import { customAlphabet } from "nanoid";
 import prisma from "./db/prisma.js";
 import cors from "cors";
+import { redisClient } from "./redis.js";
+import { startFlushClicksWorker } from "./workers/flushClick.workers.js";
+import { isValidUrl } from "./helpers/validateUrl.helpers.js";
 
 const app = express();
 
@@ -15,6 +18,16 @@ app.get("/:shortCode", async (req, res) => {
   try {
     const { shortCode } = req.params;
 
+    const cachedUrl = await redisClient.get(`url:${shortCode}`);
+
+    if (cachedUrl) {
+      console.log("CACHE HIT");
+      await redisClient.incr(`clicks:${shortCode}`);
+      return res.redirect(cachedUrl);
+    }
+
+    console.log("CACHE MISS");
+
     const url = await prisma.url.findUnique({
       where: {
         shortCode,
@@ -26,6 +39,11 @@ app.get("/:shortCode", async (req, res) => {
         error: "Short URL not found",
       });
     }
+
+    await redisClient.set(`url:${shortCode}`, url.originalUrl, {
+      EX: 60 * 60 * 24,
+    });
+    await redisClient.incr(`clicks:${shortCode}`);
 
     return res.redirect(url.originalUrl);
   } catch (error) {
@@ -79,16 +97,14 @@ app.post("/api/v1/urls", async (req, res) => {
   }
 });
 
-app.listen(3002, () => {
-  console.log("Server is running on port 3002");
-});
+const startServer = async () => {
+  await redisClient.connect();
 
-function isValidUrl(url: string) {
-  try {
-    const parsedUrl = new URL(url);
+  startFlushClicksWorker();
 
-    return parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
+  app.listen(3002, () => {
+    console.log("Server running on port 3002");
+  });
+};
+
+startServer();

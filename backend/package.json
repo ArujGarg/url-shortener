@@ -20,7 +20,8 @@
     "express": "^5.2.1",
     "nanoid": "^5.1.11",
     "pg": "^8.21.0",
-    "prisma": "^5.22.0"
+    "prisma": "^5.22.0",
+    "redis": "^5.12.1"
   },
   "devDependencies": {
     "@types/pg": "^8.20.0",
