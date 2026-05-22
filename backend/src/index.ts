@@ -5,6 +5,10 @@ import cors from "cors";
 import { redisClient } from "./redis.js";
 import { startFlushClicksWorker } from "./workers/flushClick.workers.js";
 import { isValidUrl } from "./helpers/validateUrl.helpers.js";
+import {
+  createUrlLimiter,
+  redirectLimiter,
+} from "./middlewares/rateLimit.middleware.js";
 
 const app = express();
 
@@ -14,9 +18,15 @@ app.use(express.json());
 const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 const nanoid = customAlphabet(alphabet, 7);
 
-app.get("/:shortCode", async (req, res) => {
+app.get("/:shortCode", redirectLimiter, async (req, res) => {
   try {
     const { shortCode } = req.params;
+
+    if (!shortCode || Array.isArray(shortCode)) {
+      return res.status(400).json({
+        error: "Invalid short code",
+      });
+    }
 
     const cachedUrl = await redisClient.get(`url:${shortCode}`);
 
@@ -55,7 +65,7 @@ app.get("/:shortCode", async (req, res) => {
   }
 });
 
-app.post("/api/v1/urls", async (req, res) => {
+app.post("/api/v1/urls", createUrlLimiter, async (req, res) => {
   try {
     const { originalUrl } = req.body;
 
