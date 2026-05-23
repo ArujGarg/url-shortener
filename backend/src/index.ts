@@ -9,11 +9,14 @@ import {
   createUrlLimiter,
   redirectLimiter,
 } from "./middlewares/rateLimit.middleware.js";
+import { logger } from "./logger.js";
+import { loggerMiddleware } from "./middlewares/logger.middleware.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(loggerMiddleware);
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 const nanoid = customAlphabet(alphabet, 7);
@@ -31,12 +34,22 @@ app.get("/:shortCode", redirectLimiter, async (req, res) => {
     const cachedUrl = await redisClient.get(`url:${shortCode}`);
 
     if (cachedUrl) {
-      console.log("CACHE HIT");
+      logger.info(
+        {
+          shortCode,
+        },
+        "CACHE HIT",
+      );
       await redisClient.incr(`clicks:${shortCode}`);
       return res.redirect(cachedUrl);
     }
 
-    console.log("CACHE MISS");
+    logger.info(
+      {
+        shortCode,
+      },
+      "CACHE MISS",
+    );
 
     const url = await prisma.url.findUnique({
       where: {
@@ -99,7 +112,7 @@ app.post("/api/v1/urls", createUrlLimiter, async (req, res) => {
       data: url,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
 
     return res.status(500).json({
       error: "Internal server error",
