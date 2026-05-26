@@ -1,9 +1,6 @@
-import { createClient } from "redis";
+import { Redis } from "@upstash/redis";
 
-export const redisClient = createClient({
-  url: "redis://localhost:6379",
-});
-
-redisClient.on("error", (err) => {
-  console.log("Redis Error:", err);
+export const redisClient = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });

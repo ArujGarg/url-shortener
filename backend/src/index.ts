@@ -6,8 +6,8 @@ import { redisClient } from "./redis.js";
 import { startFlushClicksWorker } from "./workers/flushClick.workers.js";
 import { isValidUrl } from "./helpers/validateUrl.helpers.js";
 import {
-  createUrlLimiter,
-  redirectLimiter,
+  createUrlRateLimitMiddleware,
+  redirectRateLimitMiddleware,
 } from "./middlewares/rateLimit.middleware.js";
 import { logger } from "./logger.js";
 import { loggerMiddleware } from "./middlewares/logger.middleware.js";
@@ -21,7 +21,7 @@ app.use(loggerMiddleware);
 const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 const nanoid = customAlphabet(alphabet, 7);
 
-app.get("/:shortCode", redirectLimiter, async (req, res) => {
+app.get("/:shortCode", redirectRateLimitMiddleware, async (req, res) => {
   try {
     const { shortCode } = req.params;
 
@@ -31,7 +31,7 @@ app.get("/:shortCode", redirectLimiter, async (req, res) => {
       });
     }
 
-    const cachedUrl = await redisClient.get(`url:${shortCode}`);
+    const cachedUrl = await redisClient.get<string>(`url:${shortCode}`);
 
     if (cachedUrl) {
       logger.info(
@@ -64,7 +64,7 @@ app.get("/:shortCode", redirectLimiter, async (req, res) => {
     }
 
     await redisClient.set(`url:${shortCode}`, url.originalUrl, {
-      EX: 60 * 60 * 24,
+      ex: 60 * 60 * 24,
     });
     await redisClient.incr(`clicks:${shortCode}`);
 
@@ -78,7 +78,7 @@ app.get("/:shortCode", redirectLimiter, async (req, res) => {
   }
 });
 
-app.post("/api/v1/urls", createUrlLimiter, async (req, res) => {
+app.post("/api/v1/urls", createUrlRateLimitMiddleware, async (req, res) => {
   try {
     const { originalUrl } = req.body;
 
@@ -121,12 +121,11 @@ app.post("/api/v1/urls", createUrlLimiter, async (req, res) => {
 });
 
 const startServer = async () => {
-  await redisClient.connect();
-
   startFlushClicksWorker();
 
-  app.listen(3002, () => {
-    console.log("Server running on port 3002");
+  const PORT = process.env.PORT || 3002;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
 };
 
