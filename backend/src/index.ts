@@ -18,7 +18,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://url-shortener-eight-coral.vercel.app/",
+      "https://url-shortener-eight-coral.vercel.app",
     ],
   }),
 );
