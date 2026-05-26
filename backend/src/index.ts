@@ -14,7 +14,15 @@ import { loggerMiddleware } from "./middlewares/logger.middleware.js";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://url-shortener-eight-coral.vercel.app/",
+    ],
+  }),
+);
+
 app.use(express.json());
 app.use(loggerMiddleware);
 
