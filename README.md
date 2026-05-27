@@ -1,4 +1,4 @@
-# URL Shortener
+# ShortLink
 
 A production-style URL shortener built with Next.js, Express.js, PostgreSQL, Redis, and Docker featuring Redis caching, batched analytics flushing, structured logging, and Redis-backed rate limiting.
 
@@ -8,6 +8,7 @@ A production-style URL shortener built with Next.js, Express.js, PostgreSQL, Red
 - Backend: https://url-shortener-67bf.onrender.com
 
 ## Architecture
+<img width="1151" height="575" alt="Screenshot 2026-05-27 at 8 44 32 PM" src="https://github.com/user-attachments/assets/f6685b96-7f89-460c-a71c-898df5db8175" />
 
 ## Features
 
