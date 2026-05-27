@@ -30,28 +30,29 @@ export default function HomePage() {
 
         <div className="mt-16 grid w-full max-w-5xl gap-6 md:grid-cols-3">
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-left backdrop-blur-xl">
-            <div className="mb-4 text-3xl">🚀</div>
-            <h3 className="text-xl font-semibold">Lightning Fast</h3>
+            <div className="mb-4 text-3xl">⚡</div>
+            <h3 className="text-xl font-semibold">Fast Redirects</h3>
             <p className="mt-3 text-zinc-400">
-              Optimized redirects with Redis caching and scalable backend
+              Optimized URL redirects using Redis caching and efficient backend
               architecture.
             </p>
           </div>
 
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-left backdrop-blur-xl">
-            <div className="mb-4 text-3xl">📊</div>
-            <h3 className="text-xl font-semibold">Detailed Analytics</h3>
+            <div className="mb-4 text-3xl">📈</div>
+            <h3 className="text-xl font-semibold">Click Analytics</h3>
             <p className="mt-3 text-zinc-400">
-              Track clicks, devices, locations, and engagement in real-time.
+              Track URL visits with Redis-backed click counting and batched
+              database updates.
             </p>
           </div>
 
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-left backdrop-blur-xl">
-            <div className="mb-4 text-3xl">🔒</div>
-            <h3 className="text-xl font-semibold">Secure & Reliable</h3>
+            <div className="mb-4 text-3xl">🛡️</div>
+            <h3 className="text-xl font-semibold">Production-Ready Backend</h3>
             <p className="mt-3 text-zinc-400">
-              Built with modern backend practices, rate limiting, and robust
-              infrastructure.
+              Built with rate limiting, structured logging, Docker, and scalable
+              backend practices.
             </p>
           </div>
         </div>
