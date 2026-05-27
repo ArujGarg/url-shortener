@@ -2,6 +2,10 @@
 
 A production-style URL shortener built with Next.js, Express.js, PostgreSQL, Redis, and Docker featuring Redis caching, batched analytics flushing, structured logging, and Redis-backed rate limiting.
 
+#Live Demo
+Frontend: url-shortener-eight-coral.vercel.app
+Backend: https://url-shortener-67bf.onrender.com
+
 ## Architecture
 
 ## Features
@@ -53,8 +57,6 @@ A production-style URL shortener built with Next.js, Express.js, PostgreSQL, Red
 3. Backend generates a shortCode
 4. URL mapping is stored in PostgreSQL
 5. Shortened URL is returned to user
-
----
 
 ## Redirect Flow
 
@@ -112,8 +114,6 @@ Response:
 {
 "shortCode": "abc123"
 }
-
----
 
 ### Redirect URL
 
