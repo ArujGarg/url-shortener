@@ -22,8 +22,8 @@ export default function HomePage() {
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg text-zinc-400 sm:text-xl">
-          A modern URL shortener built for speed, analytics, and scalability.
-          Create short links instantly and monitor clicks in real-time.
+          Generate short links instantly and experience fast, reliable redirects
+          with a modern URL shortening platform.
         </p>
 
         <InputBox />
